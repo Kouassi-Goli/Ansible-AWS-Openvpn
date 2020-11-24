@@ -1,0 +1,71 @@
+provider "aws" {
+  region = "us-east-1"
+}
+
+resource "aws_key_pair" "vpn_server_key" {
+  key_name   = "ssh-key"
+  public_key = file("./aws_vpn_key.pub")
+}
+
+resource "aws_default_vpc" "default" {}
+
+resource "aws_security_group" "vpn_server_sg" {
+  name   = "vpn_instance-security-group"
+  vpc_id = aws_default_vpc.default.id
+
+  ingress {
+    protocol    = "tcp"
+    from_port   = 22
+    to_port     = 22
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+# OpenVPN
+  ingress {
+    protocol    = "udp"
+    from_port   = 1194
+    to_port     = 1194
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name                      = "vpn_server"
+  }
+}
+
+resource "aws_instance" "vpn_instance" {
+  ami                         = "ami-0dba2cb6798deb6d8"
+  key_name                    = aws_key_pair.vpn_server_key.key_name
+  instance_type               = "t2.micro"
+  security_groups             = [aws_security_group.vpn_server_sg.name]
+  associate_public_ip_address = true
+    tags = {
+    Name                      = "vpn_server"
+  }
+}
+
+resource "null_resource" "ansible-provision" {
+
+  depends_on = [aws_instance.vpn_instance]
+  ##Create inventory
+  provisioner "local-exec" {
+    command = "echo \"[vpn_server]\" > ./hosts"
+  }
+  provisioner "local-exec" {
+    command = "echo \"${format("%s ansible_host=%s ansible_user=ubuntu", aws_instance.vpn_instance.tags.Name, aws_instance.vpn_instance.public_ip)}\" >> ./hosts"
+  }
+
+  provisioner "local-exec" {
+    command = "echo \"\n[all:vars]\nansible_python_interpreter=/usr/bin/python3\" >> ./hosts"
+  }
+}
+
+output "vpn_server_public_ip" {
+  description = "The public ip for ssh access"
+  value = aws_instance.vpn_instance.public_ip
+}

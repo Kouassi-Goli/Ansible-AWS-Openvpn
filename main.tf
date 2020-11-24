@@ -39,7 +39,7 @@ resource "aws_security_group" "vpn_server_sg" {
 }
 
 resource "aws_instance" "vpn_instance" {
-  ami                         = "ami-0dba2cb6798deb6d8"
+  ami                         = "ami-0885b1f6bd170450c"
   key_name                    = aws_key_pair.vpn_server_key.key_name
   instance_type               = "t2.micro"
   security_groups             = [aws_security_group.vpn_server_sg.name]

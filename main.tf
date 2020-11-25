@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 resource "aws_key_pair" "vpn_server_key" {
-  key_name   = "ssh-key"
+  key_name   = "vpn_server_ssh_key"
   public_key = file("./aws_vpn_key.pub")
 }
 
@@ -47,11 +47,25 @@ resource "aws_instance" "vpn_instance" {
     tags = {
     Name                      = "vpn_server"
   }
+
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    password    = ""
+  }
+}
+
+resource "aws_eip" "vpn_elastic_ip" {
+  instance = aws_instance.vpn_instance.id
+  vpc      = true
+  tags = {
+    Name = "eip-vpn_instance"
+  }
 }
 
 resource "null_resource" "ansible-provision" {
 
-  depends_on = [aws_instance.vpn_instance]
+  depends_on = [aws_instance.vpn_instance, aws_eip.vpn_elastic_ip]
   ##Create inventory
   provisioner "local-exec" {
     command = "echo \"[vpn_server]\" > ./hosts"
@@ -66,6 +80,6 @@ resource "null_resource" "ansible-provision" {
 }
 
 output "vpn_server_public_ip" {
-  description = "The public ip for ssh access"
-  value = aws_instance.vpn_instance.public_ip
+  description = "The public elastic ip for ssh access"
+  value = aws_eip.vpn_elastic_ip.public_ip
 }

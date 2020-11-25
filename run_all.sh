@@ -9,6 +9,7 @@ echo "=== TERRAFORM ==="
 terraform init
 terraform apply -auto-approve
 
+# Wait for elastic ip allocation
 sleep 20
 
 echo "=== ANSIBLE ==="

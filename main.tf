@@ -71,7 +71,7 @@ resource "null_resource" "ansible-provision" {
     command = "echo \"[vpn_server]\" > ./hosts"
   }
   provisioner "local-exec" {
-    command = "echo \"${format("%s ansible_host=%s ansible_user=ubuntu", aws_instance.vpn_instance.tags.Name, aws_instance.vpn_instance.public_ip)}\" >> ./hosts"
+    command = "echo \"${format("%s ansible_host=%s ansible_user=ubuntu", aws_instance.vpn_instance.tags.Name, aws_eip.vpn_elastic_ip.public_ip)}\" >> ./hosts"
   }
 
   provisioner "local-exec" {

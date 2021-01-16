@@ -1,7 +1,7 @@
 - hosts: vpn_server
   become: yes
   vars:
-    ansible_ssh_private_key_file: "./aws_vpn_key"
+    ansible_ssh_private_key_file: "./ssh_keys/aws_vpn_key"
   tasks:
     - name: Downlaod Openvpn installation script
       get_url:

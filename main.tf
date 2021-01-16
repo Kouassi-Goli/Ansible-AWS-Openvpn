@@ -68,7 +68,7 @@ resource "null_resource" "ansible-provision" {
   depends_on = [aws_instance.vpn_instance, aws_eip.vpn_elastic_ip]
   ##Create inventory
   provisioner "local-exec" {
-    command = "echo \"[vpn_server]\" > ./hosts"
+    command = "echo \"[servers]\" > ./hosts"
   }
   provisioner "local-exec" {
     command = "echo \"${format("%s ansible_host=%s ansible_user=ubuntu", aws_instance.vpn_instance.tags.Name, aws_eip.vpn_elastic_ip.public_ip)}\" >> ./hosts"

@@ -5,7 +5,6 @@ then
 fi
 
 echo "=== TERRAFORM ==="
-
 terraform init
 terraform apply -auto-approve
 

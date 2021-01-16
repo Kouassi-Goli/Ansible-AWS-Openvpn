@@ -1,6 +1,6 @@
 # AWS VPN
 Create a secure self-hosted OpenVPN server on AWS with Terraform and Ansible using
-OpenVPN roadwarrior script from https://github.com/angristan/openvpn-install
+OpenVPN roadwarrior script from [openvpn-install](https://github.com/angristan/openvpn-install)
 
 ## Prerequisite
 

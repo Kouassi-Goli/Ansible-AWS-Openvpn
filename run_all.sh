@@ -1,7 +1,7 @@
 echo "=== KEY GENERATION ==="
-if [ ! -f ./aws_vpn_key ]
+if [ ! -f ./ssh_keys/aws_vpn_key ]
 then
-    ssh-keygen -b 4096 -f ./aws_vpn_key -C "AWS VPN" -q -N ""
+    ssh-keygen -b 4096 -f ./ssh_keys/aws_vpn_key -C "AWS VPN" -q -N ""
 fi
 
 echo "=== TERRAFORM ==="

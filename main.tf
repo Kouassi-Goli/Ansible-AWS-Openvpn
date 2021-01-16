@@ -4,7 +4,7 @@ provider "aws" {
 
 resource "aws_key_pair" "vpn_server_key" {
   key_name   = "vpn_server_ssh_key"
-  public_key = file("./aws_vpn_key.pub")
+  public_key = file("./ssh_keys/aws_vpn_key.pub")
 }
 
 resource "aws_default_vpc" "default" {}

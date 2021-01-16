@@ -1,5 +1,7 @@
 .terraform
 terraform.tfstate*
-aws_vpn_key*
+terraform.lock.*
+ssh_keys
 hosts
 *.ovpn
+*.logs

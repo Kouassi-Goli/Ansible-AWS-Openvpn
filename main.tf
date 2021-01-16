@@ -17,7 +17,7 @@ resource "aws_security_group" "vpn_server_sg" {
     protocol    = "tcp"
     from_port   = 22
     to_port     = 22
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["193.56.243.91/32"]
   }
 # OpenVPN
   ingress {
@@ -39,6 +39,7 @@ resource "aws_security_group" "vpn_server_sg" {
 }
 
 resource "aws_instance" "vpn_instance" {
+  vpc_id = aws_default_vpc.default.id
   ami                         = "ami-0885b1f6bd170450c"
   key_name                    = aws_key_pair.vpn_server_key.key_name
   instance_type               = "t2.micro"

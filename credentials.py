@@ -49,8 +49,8 @@ path = "~/.aws"
 path = os.path.expanduser(path)
 try:
     os.mkdir(path)
-except FileExistsError as err:
-    pass
+except Exception as err:
+    print(err)
 
 with open(f"{path}/credentials", 'w') as creds:
     creds.write(ele.text)

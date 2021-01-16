@@ -7,7 +7,7 @@ OpenVPN roadwarrior script from [openvpn-install](https://github.com/angristan/o
 * Terraform and Ansible installed on host machine.
 * AWS credentials in `~/.aws/credentials`
 
-## Start 
+## Start
 
 Generate SSH key, create Ubuntu 20.04 (64-bit x86) EC2 virtual machine, install OpenVPN, create a user and dowload .ovpn profile in local directory.
 

@@ -1,3 +1,4 @@
+#!/bin/bash
 echo "=== KEY GENERATION ==="
 if [ ! -f ./ssh_keys/aws_vpn_key ]
 then

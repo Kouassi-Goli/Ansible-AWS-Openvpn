@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import os
 import time
-
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -13,10 +12,9 @@ username = "USER"
 password = "PASS"
 options = Options()
 options.add_argument('--headless')
-
 driver = webdriver.Firefox(options=options)
 
-wait = WebDriverWait(driver, 20)
+wait = WebDriverWait(driver, 10)
 driver.get("https://www.awseducate.com/student/s/awssite")
 wait.until(condition.element_to_be_clickable((By.ID, "loginPage:siteLogin:loginComponent:loginForm:username")))
 driver.find_element_by_id("loginPage:siteLogin:loginComponent:loginForm:username").send_keys(username)

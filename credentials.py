@@ -47,10 +47,11 @@ ele = soup.find(lambda tag: tag.name == "span" and "aws_access_key_id" in tag.te
 # Save the creds
 path = "~/.aws"
 path = os.path.expanduser(path)
-try:
-    os.mkdir(path)
-except Exception as err:
-    print(err)
+if not os.path.exists(path):
+    try:
+        os.mkdir(path)
+    except Exception as err:
+        print(err)
 
 with open(f"{path}/credentials", 'w') as creds:
     creds.write(ele.text)

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import subprocess
 import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -8,8 +9,10 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support import expected_conditions as condition
 from selenium.webdriver.support.ui import WebDriverWait
 
-username = "USER"
-password = "PASS"
+password = ""
+
+username = ""
+
 options = Options()
 options.add_argument('--headless')
 driver = webdriver.Firefox(options=options)

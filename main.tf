@@ -3,20 +3,69 @@ variable "ip_address" {
   description = "The ip address for ssh security group"
 }
 
+variable "project_name" {
+  type = string
+  description = "The name of the project or server"
+  default = "vpn"
+}
+
 provider "aws" {
   region = "us-east-1"
 }
 
-resource "aws_key_pair" "vpn_server_key" {
-  key_name   = "vpn_server_ssh_key"
+resource "aws_key_pair" "vpn_key" {
+  key_name   = var.project_name
   public_key = file("./ssh_keys/aws_vpn_key.pub")
 }
 
-resource "aws_default_vpc" "default" {}
+resource "aws_vpc" "vpc" {
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_hostnames = true
 
-resource "aws_security_group" "vpn_server_sg" {
-  name   = "vpn_instance-security-group"
-  vpc_id = aws_default_vpc.default.id
+  tags = {
+    Name                       = var.project_name
+  }
+
+}
+
+resource "aws_subnet" "subnet" {
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = "10.0.0.0/24"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name                       = var.project_name
+  }
+}
+
+resource "aws_internet_gateway" "gw" {
+  vpc_id = aws_vpc.vpc.id
+
+  tags = {
+    Name                      = var.project_name
+  }
+}
+
+resource "aws_route_table" "rtb" {
+  vpc_id = aws_vpc.vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.gw.id
+  }
+  tags = {
+    Name                      = var.project_name
+  }
+}
+
+resource "aws_route_table_association" "rtba" {
+  subnet_id      = aws_subnet.subnet.id
+  route_table_id = aws_route_table.rtb.id
+
+}
+
+resource "aws_security_group" "vpn_sg" {
+  name   = "vpn_security_group"
+  vpc_id = aws_vpc.vpc.id
 
   ingress {
     protocol    = "tcp"
@@ -39,26 +88,22 @@ resource "aws_security_group" "vpn_server_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name                      = "vpn_server"
+    Name                      = var.project_name
   }
 }
 
 resource "aws_instance" "vpn_instance" {
-  ami                         = "ami-0885b1f6bd170450c"
-  key_name                    = aws_key_pair.vpn_server_key.key_name
-  instance_type               = "t2.micro"
-  security_groups             = [aws_security_group.vpn_server_sg.name]
+  ami                         = "ami-042e8287309f5df03"
+  key_name                    = aws_key_pair.vpn_key.key_name
+  subnet_id                   = aws_subnet.subnet.id
+  instance_type               = "t2.nano"
+  vpc_security_group_ids      = [aws_security_group.vpn_sg.id]
   associate_public_ip_address = true
     tags = {
-    Name                      = "vpn_server"
-  }
-
-  connection {
-    type        = "ssh"
-    user        = "ubuntu"
-    password    = ""
+    Name                      = var.project_name
   }
 }
+
 
 resource "aws_eip" "vpn_elastic_ip" {
   instance = aws_instance.vpn_instance.id

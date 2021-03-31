@@ -9,11 +9,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as condition
 from selenium.webdriver.support.ui import WebDriverWait
 
-cmd = 'ls'
+cmd = '/usr/bin/secret-tool lookup AWSEducateGrenobleINP Password'.split()
 process = subprocess.run(cmd, check=True, capture_output=True, text=True)
 password = process.stdout
 
-cmd = 'ls'
+cmd = '/usr/bin/secret-tool lookup AWSEducateGrenobleINP Username'.split()
 process = subprocess.run(cmd, check=True, capture_output=True, text=True)
 username = process.stdout
 
@@ -24,7 +24,7 @@ options.add_argument("start-maximized")
 options.add_argument("user-data-dir=selenium")
 options.add_experimental_option("excludeSwitches", ["enable-automation"])
 options.add_experimental_option('useAutomationExtension', False)
-driver = webdriver.Chrome(options=options, executable_path=r"./chromedriver")
+driver = webdriver.Chrome(options=options, executable_path=r"/home/kouassi/Projects/webScrapping/chromedriver")
 
 stealth(driver,
         languages=["en-US", "en"],

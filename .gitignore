@@ -5,3 +5,4 @@ ssh_keys
 hosts
 *.ovpn
 *.log
+.idea

@@ -3,38 +3,43 @@
   vars:
     ansible_ssh_private_key_file: "./ssh_keys/aws_vpn_key"
   tasks:
+    - name: Update packages
+      shell: apt update && apt upgrade -y
+      args:
+        chdir: /home/ubuntu
+
     - name: Downlaod Openvpn installation script
       get_url:
         url: https://raw.githubusercontent.com/angristan/openvpn-install/master/openvpn-install.sh
         dest: /home/ubuntu/openvpn_install.sh
         force: yes
         owner: ubuntu
-        mode: '0766'
+        mode: "0766"
 
     - name: Install Openvpn # If installed then pass
       shell: APPROVE_INSTALL=y \
-            APPROVE_IP=y \
-            ENDPOINT=$(curl -4 ifconfig.co) \
-            IPV6_SUPPORT=y \
-            PORT_CHOICE=1 \
-            PROTOCOL_CHOICE=1 \
-            DNS=3 \
-            COMPRESSION_ENABLED=n \
-            CUSTOMIZE_ENC=n \
-            PASS=1 \
-            CLIENT=vpn_user
-            MENU_OPTION=4 \
-            ./openvpn_install.sh
+        APPROVE_IP=y \
+        ENDPOINT=$(curl -4 ifconfig.co) \
+        IPV6_SUPPORT=y \
+        PORT_CHOICE=1 \
+        PROTOCOL_CHOICE=1 \
+        DNS=3 \
+        COMPRESSION_ENABLED=n \
+        CUSTOMIZE_ENC=n \
+        PASS=1 \
+        CLIENT=vpn_user
+        MENU_OPTION=4 \
+        ./openvpn_install.sh
       args:
         chdir: /home/ubuntu
-  #  - name: Add a new client
-  #    shell: MENU_OPTION=1 \
-  #          CLIENT=second_user \
-  #          PASS=1 \
-  #          ./openvpn_install.sh
-  #    args:
-  #      chdir: /home/ubuntu
-  #      creates: second_user.ovpn
+    #  - name: Add a new client
+    #    shell: MENU_OPTION=1 \
+    #          CLIENT=second_user \
+    #          PASS=1 \
+    #          ./openvpn_install.sh
+    #    args:
+    #      chdir: /home/ubuntu
+    #      creates: second_user.ovpn
     - name: Get new client's config
       fetch:
         src: /home/ubuntu/vpn_user.ovpn

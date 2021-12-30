@@ -96,7 +96,7 @@ resource "aws_instance" "vpn_instance" {
   ami                         = "ami-042e8287309f5df03"
   key_name                    = aws_key_pair.vpn_key.key_name
   subnet_id                   = aws_subnet.subnet.id
-  instance_type               = "t2.nano"
+  instance_type               = "t2.micro"
   vpc_security_group_ids      = [aws_security_group.vpn_sg.id]
   associate_public_ip_address = true
     tags = {
